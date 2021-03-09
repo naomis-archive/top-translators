@@ -1,10 +1,12 @@
 import chalk from "chalk";
 import { HeadersInit } from "node-fetch";
 import { projectList } from "./data/projectList";
+import { authenticateChat } from "./modules/authenticateChat";
 import { checkReportStatus } from "./modules/checkReportStatus";
 import { downloadReport } from "./modules/downloadReport";
 import { generateReport } from "./modules/generateReport";
 import { getReportDownloadUrl } from "./modules/getReportDownloadUrl";
+import { sendChatMessage } from "./modules/sendChatMessage";
 import { sleep } from "./modules/sleep";
 import { topTenContributors } from "./modules/topTenContributors";
 
@@ -62,5 +64,26 @@ import { topTenContributors } from "./modules/topTenContributors";
     console.log(`${project.name} complete!`);
   }
 
-  reportList.forEach((report) => console.log(chalk.magenta(report)));
+  console.log(chalk.yellow("Authenticating..."));
+
+  const authData = await authenticateChat();
+
+  if (!authData) {
+    console.error(chalk.red("Failed to authenticate."));
+    return;
+  }
+
+  console.log(chalk.green("Successfully logged in!"));
+
+  const authToken = authData.data.authToken;
+
+  const username = authData.data.userId;
+
+  console.log(chalk.yellow("Sending messages..."));
+
+  for (const report of reportList) {
+    await sendChatMessage(report, authToken, username);
+  }
+
+  console.log(chalk.green("All done! Have a nice day!"));
 })();
