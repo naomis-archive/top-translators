@@ -1,4 +1,6 @@
+import chalk from "chalk";
 import { HeadersInit } from "node-fetch";
+import { projectList } from "./data/projectList";
 import { checkReportStatus } from "./modules/checkReportStatus";
 import { downloadReport } from "./modules/downloadReport";
 import { generateReport } from "./modules/generateReport";
@@ -19,39 +21,46 @@ import { topTenContributors } from "./modules/topTenContributors";
     "Content-Type": "application/json",
   };
 
-  console.log("Generating Report");
-  let requestReport = await generateReport(apiHeader);
+  const reportList = [];
 
-  const reportId = requestReport.data.identifier;
+  for (const project of projectList) {
+    console.log(chalk.yellow(`Generating report for ${project.name}`));
+    let requestReport = await generateReport(apiHeader, project);
 
-  while (requestReport.data.status !== "finished") {
-    console.log("Report pending...");
-    await sleep(3000);
-    requestReport = await checkReportStatus(apiHeader, reportId);
+    const reportId = requestReport.data.identifier;
+
+    while (requestReport.data.status !== "finished") {
+      console.log(chalk.cyan("Report pending..."));
+      await sleep(3000);
+      requestReport = await checkReportStatus(apiHeader, reportId, project);
+    }
+
+    console.log(chalk.green("Report complete!"));
+
+    console.log(chalk.yellow("Getting download link..."));
+
+    const downloadLinkData = await await getReportDownloadUrl(
+      apiHeader,
+      reportId,
+      project
+    );
+
+    const downloadLink = downloadLinkData.data.url;
+
+    console.log(chalk.green("Download link obtained!"));
+
+    const downloadData = await downloadReport(downloadLink);
+
+    console.log(chalk.green("Downloaded data!"));
+
+    console.log(chalk.yellow("Getting list of top 10 contributors."));
+
+    const topTenList = topTenContributors(downloadData, project);
+
+    reportList.push(topTenList);
+
+    console.log(`${project.name} complete!`);
   }
 
-  console.log("Report complete!");
-
-  console.log("Getting download link...");
-
-  const downloadLinkData = await await getReportDownloadUrl(
-    apiHeader,
-    reportId
-  );
-
-  const downloadLink = downloadLinkData.data.url;
-
-  console.log("Download link obtained!");
-
-  const downloadData = await downloadReport(downloadLink);
-
-  console.log("Downloaded data!");
-
-  console.log("Getting list of top 10 contributors.");
-
-  const topTenList = topTenContributors(downloadData);
-
-  console.log(topTenList);
-
-  console.log("Process complete!");
+  reportList.forEach((report) => console.log(chalk.magenta(report)));
 })();
