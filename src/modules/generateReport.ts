@@ -1,8 +1,10 @@
 import fetch, { HeadersInit } from "node-fetch";
 import { InitialReportInt } from "../interfaces/InitialReportInt";
+import { ProjectInt } from "../interfaces/ProjectInt";
 
 export const generateReport = async (
-  headers: HeadersInit
+  headers: HeadersInit,
+  project: ProjectInt
 ): Promise<InitialReportInt> => {
   const body = {
     name: "top-members",
@@ -15,7 +17,7 @@ export const generateReport = async (
   };
 
   const rawData = await fetch(
-    "https://freecodecamp.crowdin.com/api/v2/projects/2/reports",
+    `https://freecodecamp.crowdin.com/api/v2/projects/${project.id}/reports`,
     {
       method: "POST",
       body: JSON.stringify(body),

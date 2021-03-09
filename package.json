@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/nhcarrigan/top-translators#readme",
   "dependencies": {
+    "chalk": "^4.1.0",
     "dotenv": "^8.2.0",
     "node-fetch": "^2.6.1"
   },
