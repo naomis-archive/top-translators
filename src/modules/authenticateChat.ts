@@ -4,7 +4,6 @@ import { AuthResponseInt } from "../interfaces/AuthResponseInt";
 export const authenticateChat = async (): Promise<
   AuthResponseInt | undefined
 > => {
-  console.log("Authenticating...");
   const password = process.env.ROCKET_CHAT_PASSWORD;
   const user = process.env.ROCKET_CHAT_USERNAME;
   const baseUrl = process.env.ROCKET_CHAT_URL;

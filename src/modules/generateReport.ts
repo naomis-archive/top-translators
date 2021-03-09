@@ -9,7 +9,7 @@ export const generateReport = async (
   const body = {
     name: "top-members",
     schema: {
-      unit: "strings",
+      unit: "words",
       format: "json",
       dateFrom: new Date(Date.now() - 604800000).toISOString(),
       dateTo: new Date(Date.now()).toISOString(),

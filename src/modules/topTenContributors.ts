@@ -11,13 +11,15 @@ export const topTenContributors = (
   );
 
   const topTenArray = userList.slice(0, 10).map((val, index) => {
+    const userLangs = val.languages.map((lang) => lang.name);
+
     return `#${++index} - ${val.user.fullName} with ${
       val.translated
-    } translations!`;
+    } translations _(in ${userLangs.join(", ")})_`;
   });
 
   topTenArray.unshift(
-    `Top ${project.name} Contributors by Translation for Last Seven Days`
+    `*Top ${project.name} Contributors by Translation for Last Seven Days*`
   );
 
   topTenArray.push("Thank you for your contributions.");
