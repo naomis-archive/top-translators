@@ -4,8 +4,7 @@ This is an MVP for generating a top translator list from Crowdin's API.
 
 ## Live Version
 
-This page is not yet deployed.
-
+This project is archived in favour of [the leaderboard project](https://github.com/nhcarrigan/leaderboard) and thus is not deployed.
 <!--This page is currently deployed. [View the live website.]()-->
 
 ## Feedback and Bugs
